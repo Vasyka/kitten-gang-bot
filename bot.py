@@ -13,7 +13,7 @@ class KittenGangBot(discord.Client):
 		*args,
 		web_client: ClientSession,
 		intents: Optional[discord.Intents] = None,
-		testing_guild_id: Optional[int] = None,
+		guild_id: Optional[int] = None,
 	):
 		"""Client initialization."""
 		if intents is None:
@@ -22,7 +22,7 @@ class KittenGangBot(discord.Client):
 
 		super().__init__(intents=intents)
 		self.web_client = web_client
-		self.testing_guild_id = testing_guild_id
+		self.guild_id = guild_id
 		self.tree = app_commands.CommandTree(self)
 
 	async def on_ready(self):
@@ -37,15 +37,8 @@ class KittenGangBot(discord.Client):
 
 		self.tree.add_command(hello)
 		self.tree.add_command(help)
+		self.tree.add_command(profile)
 
 		await self.tree.sync()
 
-		if self.testing_guild_id is not None:
-			try:
-				testing_guild = discord.Object(self.testing_guild_id)
-				testing_guild.owner_id = (await self.fetch_guild(testing_guild.id)).owner_id
-				await database.bot_db.add_a_guild(discord_guild_id=testing_guild.id, guild_owner_id=testing_guild.owner_id)
-				self.tree.copy_global_to(guild=testing_guild)
-				await self.tree.sync(guild=testing_guild)
-			except discord.errors.Forbidden:
-				print("Bot is not in the testing guild.")
+

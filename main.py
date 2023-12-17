@@ -33,7 +33,7 @@ async def main():
         async with KittenGangBot(
             commands.when_mentioned,
             web_client=web_client,
-            testing_guild_id=os.getenv("GUILD_ID", None),
+            guild_id=os.getenv("GUILD_ID", None),
         ) as client:
             await client.start(os.getenv("DISCORD_TOKEN", ""))
 
